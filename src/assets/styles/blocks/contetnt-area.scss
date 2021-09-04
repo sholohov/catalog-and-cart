@@ -1,0 +1,123 @@
+.content-area {
+  $this: ".content";
+  line-height: $line-height;
+  font-size: $font-size;
+  font-weight: normal;
+  white-space: normal;
+
+  h1:not([class]) {
+    font-size: $em * 32;
+    line-height: 1;
+    font-weight: 500;
+    margin: 0.5em 0;
+  }
+
+  h2:not([class]) {
+    font-size: $em * 24;
+    line-height: 1.125;
+    font-weight: 500;
+    margin: 0.5em 0;
+  }
+
+  h3:not([class]) {
+    font-size: $em * 20;
+    line-height: 1.25;
+    font-weight: 500;
+    margin: 0.5em 0;
+  }
+
+  h4:not([class]) {
+    font-size: $em * 16;
+    line-height: 1.5;
+    font-weight: 500;
+    margin: 0.5em 0;
+  }
+
+  h5:not([class]) {
+    font-size: $em * 14;
+    line-height: 1.5;
+    font-weight: 500;
+    margin: 0.5em 0;
+  }
+
+  h6:not([class]) {
+    font-size: $em * 12;
+    line-height: 1.5;
+    font-weight: 500;
+    margin: 0.5em 0;
+  }
+
+  p:not([class]) {
+    font-size: $em * 16;
+    line-height: 1.5;
+    margin: 0.5em 0;
+  }
+
+  small:not([class]) {
+    font-size: $em * 14;
+  }
+
+  hr:not([class]) {
+    margin: 1em 0;
+    height: 1px;
+    border: none;
+    background-color: $blue-grey-100;
+  }
+
+  b:not([class]) {
+    font-size: $em * 16;
+  }
+
+  u:not([class]) {
+    font-size: $em * 16;
+  }
+
+  s:not([class]) {
+    font-size: 0 0 $em * 16;
+  }
+
+  ol:not([class]) {
+    list-style: none;
+    margin: 0.5em 0;
+    counter-reset: ol-counter;
+
+    > li:not([class]) {
+      counter-increment: ol-counter;
+      position: relative;
+
+      &::before {
+        content: counter(ol-counter)'.';
+        position: absolute;
+        display: inline-block;
+        top: -($em * 1);
+        right: 100%;
+        margin: 0 8px 0 0;
+        font-weight: bold;
+        white-space: nowrap;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  ul:not([class]) {
+    list-style: none;
+    margin: 0.5em 0;
+
+    > li:not([class]) {
+      position: relative;
+
+      &::before {
+        position: absolute;
+        display: inline-block;
+        content: "";
+        height: $em * 8;
+        width: $em * 8;
+        top: $em * 8;
+        right: 100%;
+        margin: 0 12px 0 0;
+        background-color: currentColor;
+        opacity: 0.5;
+      }
+    }
+  }
+}
