@@ -22,9 +22,10 @@ body {
   font-family: $font;
   background-color: $bg-color;
   color: $text-color;
+  overflow-y: scroll;
 }
 
-@media screen and (max-width: 1024px) {
+@include wmin($qm-tablet + 1){
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px

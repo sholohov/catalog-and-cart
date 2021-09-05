@@ -4,6 +4,12 @@
   }
 }
 
+@mixin wmin($val) {
+  @media only screen and (min-width: $val + "px") {
+    @content;
+  }
+}
+
 %resetButton {
   border: none;
   padding: 0;

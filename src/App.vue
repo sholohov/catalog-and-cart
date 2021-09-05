@@ -5,7 +5,7 @@
         <h1>Тeстовое Задание для SoftCorp</h1>
         <hr>
         <p>Курс рубля: <b>1</b> USD = <b>{{ currencyRate }}</b> BYN</p>
-        <button @click="handleChangeCurrencyBtn">Изменить</button>
+        <button title="Случайное значение" @click="handleChangeCurrencyBtn">Изменить</button>
       </section>
 
       <section class="app__groups">
@@ -13,7 +13,7 @@
           class="app__groups-item"
           :data="item"
           :key="item.id"
-          v-for="item in groups"
+          v-for="item in model"
         />
       </section>
       <ShoppingCart v-if="goodsInCart.length" :items="goodsInCart" />
@@ -58,11 +58,11 @@ export default class App extends Vue {
 
   names: NamesMapData = {};
   goods: GoodsProps[] = [];
-  groups: GroupProps[] = []
+  model: GroupProps[] = []
   currencyRate = getCurrencyRate("USD");
 
   get goodsInCart(): GroupItemProps[] {
-    return this.groups.reduce((items, group) => {
+    return this.model.reduce((items, group) => {
       const itemsInCart = group.products.filter(i => i.inCart);
       return [...items, ...itemsInCart]
     }, [] as GroupItemProps[])
@@ -72,7 +72,7 @@ export default class App extends Vue {
     this.loadData()
   }
 
-  buildGroups() {
+  buildModel() {
     const groups: GroupProps[] = []
     this.goods.forEach(g => {
       const groupId = String(g.G);
@@ -97,7 +97,7 @@ export default class App extends Vue {
         inCart: false
       })
     })
-    this.groups = groups;
+    this.model = groups;
   }
 
   async loadData() {
@@ -105,9 +105,10 @@ export default class App extends Vue {
       const resolved = await Promise.all([this.fetchNames(), this.fetchGoods()]);
       this.names = resolved[0];
       this.goods = resolved[1];
-      this.buildGroups();
+      this.buildModel();
     } catch (e) {
-      console.error(e)
+      const message= e?.message || 'Что то пошло не так'
+      alert("загрузка данных: " + message)
     }
   }
 
@@ -121,14 +122,14 @@ export default class App extends Vue {
 
   handleChangeCurrencyBtn() {
     this.currencyRate = getCurrencyRate("USD")
-    this.buildGroups();
+    this.buildModel();
   }
 }
 </script>
 
 <style lang="scss">
 .app {
-  min-height: 100%;
+  min-height: 100vh;
   background-color: $bg-color-darken;
 
   &__groups {
@@ -136,7 +137,7 @@ export default class App extends Vue {
     columns: 2;
     column-gap: 10px;
 
-    @include wmax(1024){
+    @include wmax($qm-tablet){
       columns: 1;
     }
   }

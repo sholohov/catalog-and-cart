@@ -8,22 +8,22 @@
         <span class="shopping-cart__param"></span>
       </li>
       <li :key="item.id" class="shopping-cart__item" v-for="item in items">
-        <span class="shopping-cart__param shopping-cart__title">
+        <span class="shopping-cart__param shopping-cart__param--title">
           {{ item.groupName }}. {{ item.title }}
         </span>
-        <span class="shopping-cart__param shopping-cart__quantity">
+        <span class="shopping-cart__param shopping-cart__param--quantity">
           <input
             min="1"
             class="shopping-cart__quantity-input"
             type="number"
             v-model="item.quantity"
-            @input="handleQuantityInput(item)"
+            @change="handleQuantityInput(item)"
           />
         </span>
-        <span class="shopping-cart__param shopping-cart__price">
+        <span class="shopping-cart__param shopping-cart__param--price">
           <b class="shopping-cart__price-currency">{{ item.price }} руб.</b> / шт.
         </span>
-        <span class="shopping-cart__param shopping-cart__actions">
+        <span class="shopping-cart__param shopping-cart__param--actions">
           <button class="shopping-cart__delete" @click="handleDelete(item)">Удалить</button>
         </span>
       </li>
@@ -93,37 +93,34 @@ export default class ShoppingCart extends Vue {
 
   &__param {
     padding: 14px 10px;
-  }
 
-  &__title {
-  }
-
-  &__quantity {
+    &--price {
+      color: $text-color--light;
+    }
   }
 
   &__quantity-input {
     box-sizing: border-box;
-    width: 100%;
+    width: 70px;
     border: 1px solid $blue-grey-100;
     background-color: $bg-color;
     appearance: none;
     padding: 8px;
+    text-align: center;
 
     &:focus {
       outline: none;
       border: 1px solid $blue-grey;
     }
-  }
 
-  &__price {
-    color: $text-color--light;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      appearance: none;
+    }
   }
 
   &__price-currency {
     color: $text-color;
-  }
-
-  &__actions {
   }
 
   &__delete {
@@ -131,7 +128,12 @@ export default class ShoppingCart extends Vue {
 
     color: $primary;
     cursor: pointer;
+    height: 28px;
+    padding: 0 6px;
 
+    &:focus {
+      background-color: rgba($primary, 0.1);
+    }
     &:hover {
       opacity: 0.7;
     }

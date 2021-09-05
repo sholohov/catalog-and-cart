@@ -1,7 +1,7 @@
 export interface GroupItemProps {
   id: string
   title: string
-  groupName: string;
+  groupName: string
   price: number
   quantity: number
   inStock: number
