@@ -3,6 +3,7 @@ export interface GroupItemProps {
   title: string
   groupName: string
   price: number
+  pricePrev?: number
   quantity: number
   inStock: number
   inCart: boolean

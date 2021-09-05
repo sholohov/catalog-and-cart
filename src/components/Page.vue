@@ -7,7 +7,7 @@
       <slot />
     </main>
     <main class="page__footer">
-      <slot name="footer"/>
+      <slot name="footer" />
     </main>
   </div>
 </template>
@@ -25,7 +25,7 @@ export default class Page extends Vue {
   padding: 40px;
   min-height: 100%;
 
-  @media screen and (max-width: 1024px){
+  @media screen and (max-width: 1024px) {
     padding: 20px;
   }
 

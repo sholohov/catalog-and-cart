@@ -1,33 +1,47 @@
 <template>
   <div class="shopping-cart">
-    <ul class="shopping-cart__list">
-      <li class="shopping-cart__item shopping-cart__item--header">
+    <transition-group
+      tag="ul"
+      name="shopping-cart__item-"
+      class="shopping-cart__list"
+    >
+      <li
+        key="shopping-cart__header"
+        class="shopping-cart__item shopping-cart__item--header"
+      >
         <span class="shopping-cart__param">Наименование товара и описание</span>
         <span class="shopping-cart__param">Количество</span>
         <span class="shopping-cart__param">Цена</span>
-        <span class="shopping-cart__param"></span>
+        <span class="shopping-cart__param" />
       </li>
-      <li :key="item.id" class="shopping-cart__item" v-for="item in items">
+      <li
+        v-for="item in items"
+        :key="item.id"
+        class="shopping-cart__item"
+      >
         <span class="shopping-cart__param shopping-cart__param--title">
           {{ item.groupName }}. {{ item.title }}
         </span>
         <span class="shopping-cart__param shopping-cart__param--quantity">
           <input
+            v-model="item.quantity"
             min="1"
             class="shopping-cart__quantity-input"
             type="number"
-            v-model="item.quantity"
             @change="handleQuantityInput(item)"
-          />
+          > шт.
         </span>
         <span class="shopping-cart__param shopping-cart__param--price">
           <b class="shopping-cart__price-currency">{{ item.price }} руб.</b> / шт.
         </span>
         <span class="shopping-cart__param shopping-cart__param--actions">
-          <button class="shopping-cart__delete" @click="handleDelete(item)">Удалить</button>
+          <button
+            class="shopping-cart__delete"
+            @click="handleDelete(item)"
+          >Удалить</button>
         </span>
       </li>
-    </ul>
+    </transition-group>
     <div class="shopping-cart__total">
       Общая стоимость: <b class="shopping-cart__total-num">{{ total }} руб.</b>
     </div>
@@ -76,11 +90,23 @@ export default class ShoppingCart extends Vue {
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow-x: auto;
   }
 
   &__item {
+    min-width: 640px;
     display: grid;
-    grid-template-columns: 3fr 120px 1fr 100px;
+    grid-template-columns: 3fr 1fr 1fr 100px;
+    transition: all 0.3s;
+
+    &--enter-active, &--leave-active {
+      transition: all 0.3s;
+    }
+
+    &--enter, &--leave-to {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
 
     &:not(:last-child) {
       border-bottom: 1px solid $blue-grey-50;
@@ -88,6 +114,10 @@ export default class ShoppingCart extends Vue {
 
     &--header {
       color: $text-color--light;
+    }
+
+    @include wmax($qm-tablet) {
+      grid-template-columns: 3fr 120px 150px 100px;
     }
   }
 
@@ -97,16 +127,19 @@ export default class ShoppingCart extends Vue {
     &--price {
       color: $text-color--light;
     }
+
+    &--quantity {
+      color: $text-color--light;
+    }
   }
 
   &__quantity-input {
     box-sizing: border-box;
-    width: 70px;
+    width: 60px;
     border: 1px solid $blue-grey-100;
     background-color: $bg-color;
     appearance: none;
     padding: 8px;
-    text-align: center;
 
     &:focus {
       outline: none;
@@ -134,6 +167,7 @@ export default class ShoppingCart extends Vue {
     &:focus {
       background-color: rgba($primary, 0.1);
     }
+
     &:hover {
       opacity: 0.7;
     }

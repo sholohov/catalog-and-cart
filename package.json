@@ -1,5 +1,5 @@
 {
-  "name": "soft-corp",
+  "name": "catalog-and-cart",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -36,14 +36,13 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
+      "plugin:vue/recommended",
       "eslint:recommended",
       "@vue/typescript"
     ],
     "parserOptions": {
       "parser": "@typescript-eslint/parser"
-    },
-    "rules": {}
+    }
   },
   "browserslist": [
     "> 1%",

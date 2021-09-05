@@ -1,22 +1,54 @@
 <template>
   <div class="app">
     <Page>
-      <section class="content-area">
-        <h1>Тeстовое Задание для SoftCorp</h1>
+      <section class="app__section content-area">
+        <h1>Каталог / корзина</h1>
         <hr>
-        <p>Курс рубля: <b>1</b> USD = <b>{{ currencyRate }}</b> BYN</p>
-        <button title="Случайное значение" @click="handleChangeCurrencyBtn">Изменить</button>
+        <ul>
+          <li>По клику на элемент списка, происходит добавление в корзину, повторно - происходит удаление.</li>
+          <li>Диапазон генерации курса валюты в диапазоне 2.4 - 2.6</li>
+          <li>Диапазон генерации цен валюты в диапазоне +/- 20% от предыдущей цены</li>
+          <li>Цвет ячейки цены отражает отношение новой цены к старой</li>
+          <li>При наведении на цену подсказка с предыдущей ценой</li>
+        </ul>
+        <br>
+        <p>
+          Курс: <b>1</b> USD = <b>{{ currencyRate }}</b> BYN
+        </p>
+        <p>
+          Сгенерировать:
+          <span class="app__btn-group">
+            <button
+              class="app__generate-btn"
+              @click="handleGenerateCurrencyBtn"
+            >
+              Курс
+            </button>
+            <button
+              class="app__generate-btn"
+              @click="handleGeneratePriceBtn"
+            >
+              Цены товаров
+            </button>
+          </span>
+        </p>
       </section>
 
-      <section class="app__groups">
+      <section class="app__section app__groups">
         <GoodsGroup
+          v-for="item in model"
+          :key="item.id"
           class="app__groups-item"
           :data="item"
-          :key="item.id"
-          v-for="item in model"
         />
       </section>
-      <ShoppingCart v-if="goodsInCart.length" :items="goodsInCart" />
+
+      <section class="app__section">
+        <ShoppingCart
+          v-if="goodsInCart.length"
+          :items="goodsInCart"
+        />
+      </section>
     </Page>
   </div>
 </template>
@@ -68,11 +100,12 @@ export default class App extends Vue {
     }, [] as GroupItemProps[])
   }
 
-  mounted() {
-    this.loadData()
+  async mounted() {
+    await this.loadData()
+    this.buildModel();
   }
 
-  buildModel() {
+  buildModel(resetOldPrice = false) {
     const groups: GroupProps[] = []
     this.goods.forEach(g => {
       const groupId = String(g.G);
@@ -87,11 +120,14 @@ export default class App extends Vue {
       }
       const productId = String(g.T);
       const productNames = groupNames.B[productId] || {};
+      if (!groups.length) return
+      const prevProduct = this.model.find(i => i.id === groupId)?.products.find(i => i.id === productId)
       groups[groups.length - 1].products.push({
         id: productId,
         title: productNames.N,
         groupName: groupNames.G,
         quantity: 1,
+        pricePrev: !resetOldPrice ? prevProduct?.price : undefined,
         inStock: g.P,
         price: +(this.currencyRate * g.C).toFixed(2),
         inCart: false
@@ -105,9 +141,8 @@ export default class App extends Vue {
       const resolved = await Promise.all([this.fetchNames(), this.fetchGoods()]);
       this.names = resolved[0];
       this.goods = resolved[1];
-      this.buildModel();
     } catch (e) {
-      const message= e?.message || 'Что то пошло не так'
+      const message = e?.message || 'Что то пошло не так'
       alert("загрузка данных: " + message)
     }
   }
@@ -120,24 +155,39 @@ export default class App extends Vue {
     return (await this.$api.goods.list()).Goods;
   }
 
-  handleChangeCurrencyBtn() {
+  handleGenerateCurrencyBtn() {
     this.currencyRate = getCurrencyRate("USD")
-    this.buildModel();
+    this.buildModel(true);
+  }
+
+  changePrice() {
+    const newPrice = (v: number) => getRandomInRange.float(v / 0.9, v * 0.9)
+    this.goods = this.goods.map(i => ({...i, C: newPrice(i.C)}))
+  }
+
+  handleGeneratePriceBtn() {
+    this.changePrice()
+    this.buildModel()
   }
 }
 </script>
 
 <style lang="scss">
 .app {
+  $this: ".app";
+
   min-height: 100vh;
   background-color: $bg-color-darken;
 
-  &__groups {
+  &__section {
     margin: 20px 0 0;
+  }
+
+  &__groups {
     columns: 2;
     column-gap: 10px;
 
-    @include wmax($qm-tablet){
+    @include wmax($qm-tablet) {
       columns: 1;
     }
   }
@@ -145,6 +195,34 @@ export default class App extends Vue {
   &__groups-item {
     margin: 0 0 10px;
     break-inside: avoid;
+  }
+
+  &__btn-group {
+    margin: -4px;
+  }
+
+  &__generate-btn {
+    @extend %resetButton;
+    background-color: $primary;
+    color: $bg-color;
+    padding: 0.25em 0.5em;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    font-size: 16px;
+    margin: 4px;
+    cursor: pointer;
+    border: 2px solid $primary;
+    border-radius: 3px;
+    font-weight: 500;
+
+    &:hover {
+      opacity: 0.9;
+    }
+
+    &:focus {
+      border-color: rgba($text-color, 0.5);
+    }
   }
 }
 </style>
