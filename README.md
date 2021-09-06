@@ -1,6 +1,4 @@
-# Test job for soft corp
-
-demo: https://softcorp-tz.surge.sh
+# Catalog and basket
 
 ## Project setup
 ```
